@@ -37,14 +37,20 @@ class HupuPipeline(object):
         self.db = self.client[self.mongo_db]
         self.db.authenticate(self.mongo_usr, self.mongo_pwd, mechanism='SCRAM-SHA-1')
 
+        self.db[self.user_collection_name].create_index("puid", unique=True)
+        self.db[self.topic_collection_name].create_index("tid", unique=True)
+
     def close_spider(self, spider):
         self.client.close()
 
     def process_item(self, item, spider):
-        if isinstance(item, UserItem):
-            self.db[self.user_collection_name].insert_one(dict(item))
+        try:
+            if isinstance(item, UserItem):
+                self.db[self.user_collection_name].insert_one(dict(item))
 
-        elif isinstance(item, TopicItem):
-            self.db[self.topic_collection_name].insert_one(dict(item))
-
-        return item
+            elif isinstance(item, TopicItem):
+                self.db[self.topic_collection_name].insert_one(dict(item))
+        except pymongo.errors.DuplicateKeyError as e:
+            pass
+        finally:
+            return item
