@@ -56,11 +56,6 @@ class HupuUsersSpider(RedisSpider):
         for topic in topic_list:
             if topic.get("fid"):
                 pass
-                # fid = topic["fid"]
-                # yield scrapy.Request(
-                #     url="http://bbs.mobileapi.hupu.com/3/7.3.17/forums/getForumsInfoList?sign=04f967734fcfe99a8fdf70d4f8bb23a8&clientId=25024432&advId=4497039A-C3C3-4A56-8266-4032F636152D&fid={}&type=2&stamp=0&sc_source=0&_ssid=SGFvYm8&night=0&crt=1563417390&client=a8ad06fabdb55ba0337334aecbe2da305640943d&time_zone=Asia%2FShanghai&page=".format(fid),
-                #     callback=self.parse_posts,
-                # )
 
             else:
                 topic_id = topic.get("topic_id")
