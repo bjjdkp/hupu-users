@@ -254,7 +254,7 @@ class HupuUsersSpider(RedisSpider):
         user_data["nickname"] = user_json["nickname"]
         user_data["header_url"] = user_json["header"]
         user_data["level"] = user_json["level"]
-        user_data["register_days"] = re.search(r'\d+', user_json["reg_time_str"]).group()
+        user_data["register_days"] = int(re.search(r'\d+', user_json["reg_time_str"]).group())
         user_data["gender"] = user_json["gender"]
         user_data["location"] = user_json["location_str"]
         user_data["follow_count"] = int(user_json["follow_count"])
@@ -321,7 +321,6 @@ class HupuUsersSpider(RedisSpider):
             "user-agent": "Mozilla/5.0 (Linux; Android 5.1; Google Build/LMY47D) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 kanqiu/7.3.17.11347/7435 isp/1 network/WIFI",
         }
         while True:
-            time.sleep(random.uniform(0, 1))
             params = {
                 'puid': user_data["puid"],
                 'client': utils.get_random_client(),
@@ -353,7 +352,6 @@ class HupuUsersSpider(RedisSpider):
             "user-agent": "Mozilla/5.0 (Linux; Android 5.1; Google Build/LMY47D) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 kanqiu/7.3.17.11347/7435 isp/1 network/WIFI",
         }
         while True:
-            time.sleep(random.uniform(0, 1))
             params = {
                 'puid': user_data["puid"],
                 'client': utils.get_random_client(),
