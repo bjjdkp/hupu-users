@@ -253,7 +253,7 @@ class HupuUsersSpider(RedisSpider):
         user_data["nickname"] = user_json["nickname"]
         user_data["header_url"] = user_json["header"]
         user_data["level"] = user_json["level"]
-        user_data["register_date"] = re.search(r'\d+', user_json["reg_time_str"]).group()
+        user_data["register_days"] = re.search(r'\d+', user_json["reg_time_str"]).group()
         user_data["gender"] = user_json["gender"]
         user_data["location"] = user_json["location_str"]
         user_data["follow_count"] = int(user_json["follow_count"])

@@ -14,7 +14,7 @@ class UserItem(scrapy.Item):
     nickname = scrapy.Field()
     header_url = scrapy.Field()
     level = scrapy.Field()
-    register_date = scrapy.Field()
+    register_days = scrapy.Field()
     gender = scrapy.Field()  # 1：男  0：女
     location = scrapy.Field()
     follow_count = scrapy.Field()  # 关注人数
