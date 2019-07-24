@@ -44,16 +44,20 @@ class HupuPipeline(object):
         self.client.close()
 
     def process_item(self, item, spider):
+        data = dict(item)
+
         if isinstance(item, UserItem):
+            data["puid"] = int(data["puid"])
             self.db[self.user_collection_name].update_one(
                 {"puid": dict(item)["puid"]},
-                {"$set": dict(item)},
+                {"$set": data},
                 upsert=True,
             )
         elif isinstance(item, TopicItem):
+            data["tid"] = int(data["tid"])
             self.db[self.topic_collection_name].update_one(
                 {"tid": dict(item)["tid"]},
-                {"$set": dict(item)},
+                {"$set": data},
                 upsert=True,
             )
         return item
