@@ -319,7 +319,7 @@ class HupuUsersSpider(RedisSpider):
             "user-agent": "Mozilla/5.0 (Linux; Android 5.1; Google Build/LMY47D) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 kanqiu/7.3.17.11347/7435 isp/1 network/WIFI",
         }
         while True:
-            time.sleep(random.uniform(1, 3))
+            time.sleep(random.uniform(0, 1))
             params = {
                 'puid': user_data["puid"],
                 'client': utils.get_random_client(),
@@ -350,7 +350,7 @@ class HupuUsersSpider(RedisSpider):
             "user-agent": "Mozilla/5.0 (Linux; Android 5.1; Google Build/LMY47D) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 kanqiu/7.3.17.11347/7435 isp/1 network/WIFI",
         }
         while True:
-            time.sleep(random.uniform(1, 3))
+            time.sleep(random.uniform(0, 1))
             params = {
                 'puid': user_data["puid"],
                 'client': utils.get_random_client(),
