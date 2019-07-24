@@ -5,6 +5,7 @@ import time
 import json
 import scrapy
 import random
+import logging
 import datetime
 import requests
 import hupu.utils as utils
@@ -312,6 +313,7 @@ class HupuUsersSpider(RedisSpider):
         if user_data["follow_count"] == 0:
             return []
 
+        logging.debug("follow_count: %s" % user_data["follow_count"])
         bbs_followers = []
         page = 1
         user_follow_url = "https://bbs.mobileapi.hupu.com/1/7.3.17/user/getUserFollow"
@@ -343,6 +345,7 @@ class HupuUsersSpider(RedisSpider):
         if user_data["fans_count"] == 0:
             return []
 
+        logging.debug("fans_count: %s" % user_data["fans_count"])
         bbs_fans = []
         page = 1
         user_fans_url = "https://bbs.mobileapi.hupu.com/1/7.3.17/user/getUserBeFollow"
