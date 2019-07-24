@@ -44,13 +44,16 @@ class HupuPipeline(object):
         self.client.close()
 
     def process_item(self, item, spider):
-        try:
-            if isinstance(item, UserItem):
-                self.db[self.user_collection_name].insert_one(dict(item))
-
-            elif isinstance(item, TopicItem):
-                self.db[self.topic_collection_name].insert_one(dict(item))
-        except pymongo.errors.DuplicateKeyError as e:
-            pass
-        finally:
-            return item
+        if isinstance(item, UserItem):
+            self.db[self.user_collection_name].update_one(
+                {"puid": dict(item)["puid"]},
+                {"$set": dict(item)},
+                upsert=True,
+            )
+        elif isinstance(item, TopicItem):
+            self.db[self.topic_collection_name].update_one(
+                {"tid": dict(item)["tid"]},
+                {"$set": dict(item)},
+                upsert=True,
+            )
+        return item
