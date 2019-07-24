@@ -108,3 +108,6 @@ MONGO_PORT = 27017
 MONGO_DATABASE = "hupu"
 MONGO_USR = "test"
 MONGO_PWD = "test"
+
+# spider stop controller
+CLOSESPIDER_ERRORCOUNT = 30
