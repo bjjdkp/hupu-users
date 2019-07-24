@@ -5,8 +5,10 @@
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
+import pymongo
+from hupu.settings import *
 from scrapy import signals
-
+from scrapy.exceptions import IgnoreRequest
 
 class HupuSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -78,7 +80,18 @@ class HupuDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        return None
+        if request.method == "GET":
+            return None
+
+        puid = request.meta["puid"]
+        client = pymongo.MongoClient(host=MONGO_URI, port=MONGO_PORT)
+        db = client[MONGO_DATABASE]
+        db.authenticate(MONGO_USR, MONGO_PWD, mechanism='SCRAM-SHA-1')
+        user = db["users"].find_one({"puid": puid})
+        if user:
+            raise IgnoreRequest
+        else:
+            return None
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
