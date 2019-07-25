@@ -238,7 +238,7 @@ class HupuUsersSpider(RedisSpider):
                 formdata=formdata,
                 callback=self.parse_user_detail,
                 priority=15,
-                meta={"puid": reply["puid"]}
+                meta={"puid": int(reply["puid"])}
             )
 
     def parse_user_detail(self, response):
@@ -301,7 +301,7 @@ class HupuUsersSpider(RedisSpider):
                     formdata=formdata,
                     callback=self.parse_user_detail,
                     priority=15,
-                    meta={"puid": str(user["puid"])}
+                    meta={"puid": int(user["puid"])}
                 )
 
     def get_followers(self, user_data):
