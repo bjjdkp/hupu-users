@@ -47,16 +47,14 @@ class HupuPipeline(object):
         data = dict(item)
 
         if isinstance(item, UserItem):
-            data["puid"] = int(data["puid"])
             self.db[self.user_collection_name].update_one(
-                {"puid": dict(item)["puid"]},
+                {"puid": data["puid"]},
                 {"$set": data},
                 upsert=True,
             )
         elif isinstance(item, TopicItem):
-            data["tid"] = int(data["tid"])
             self.db[self.topic_collection_name].update_one(
-                {"tid": dict(item)["tid"]},
+                {"tid": data["tid"]},
                 {"$set": data},
                 upsert=True,
             )
