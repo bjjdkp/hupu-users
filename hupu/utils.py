@@ -23,11 +23,6 @@ def get_random_ssid():
     return ''.join(random.choices(characters, k=15))+'='
 
 
-def get_random_ssid_post():
-    characters = string.digits + string.ascii_letters
-    return ''.join(random.choices(characters, k=20))
-
-
 def get_random_imei():
     # only in android
     digits = string.digits
@@ -43,11 +38,6 @@ def get_random_imei():
 def get_random_client():
     characters = string.digits + string.ascii_lowercase
     return ''.join(random.choices(characters, k=16))
-
-
-def get_random_client_post():
-    characters = string.digits + string.ascii_lowercase
-    return ''.join(random.choices(characters, k=40))
 
 
 if __name__ == '__main__':

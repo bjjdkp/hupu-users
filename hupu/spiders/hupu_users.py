@@ -225,12 +225,12 @@ class HupuUsersSpider(RedisSpider):
             formdata = {
                 'puid': str(reply["puid"]),
                 'time_zone': 'Asia/Shanghai',
-                'client': utils.get_random_client_post(),
+                'client': utils.get_random_client(),
                 'night': '0',
                 'crt': str(int(time.time())),
                 'advId': '4497039A-C3C3-4A56-8266-4032F636152D',
                 'clientId': utils.get_random_clientId(),
-                '_ssid': utils.get_random_ssid_post(),
+                '_ssid': utils.get_random_ssid(),
             }
             formdata["sign"] = utils.get_sign(formdata)
             yield scrapy.FormRequest(
@@ -288,12 +288,12 @@ class HupuUsersSpider(RedisSpider):
                 formdata = {
                     'puid': str(user["puid"]),
                     'time_zone': 'Asia/Shanghai',
-                    'client': utils.get_random_client_post(),
+                    'client': utils.get_random_client(),
                     'night': '0',
                     'crt': str(int(time.time())),
                     'advId': '4497039A-C3C3-4A56-8266-4032F636152D',
                     'clientId': utils.get_random_clientId(),
-                    '_ssid': utils.get_random_ssid_post(),
+                    '_ssid': utils.get_random_ssid(),
                 }
                 formdata["sign"] = utils.get_sign(formdata)
                 yield scrapy.FormRequest(
