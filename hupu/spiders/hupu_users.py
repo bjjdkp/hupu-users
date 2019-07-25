@@ -328,7 +328,7 @@ class HupuUsersSpider(RedisSpider):
             }
             res = requests.get(user_follow_url, headers=headers, params=params)
             res_json = json.loads(res.text)
-            bbs_followers.extend(res_json["result"]["list"])
+            bbs_followers.extend(res_json["result"].get("list", []))
             if res_json["result"]["nextPage"]:
                 page += 1
             else:
@@ -359,7 +359,7 @@ class HupuUsersSpider(RedisSpider):
             }
             res = requests.get(user_fans_url, headers=headers, params=params)
             res_json = json.loads(res.text)
-            bbs_fans.extend(res_json["result"]["list"])
+            bbs_fans.extend(res_json["result"].get("list", []))
             if res_json["result"]["nextPage"]:
                 page += 1
             else:
