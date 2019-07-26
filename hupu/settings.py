@@ -91,10 +91,10 @@ ITEM_PIPELINES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # Enables scheduling storing requests queue in redis.
-SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+# SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 
 # Ensure all spiders share same duplicates filter through redis.
-DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+# DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 
 # Don't cleanup redis queues, allows to pause/resume crawls.
 SCHEDULER_PERSIST = True
@@ -111,3 +111,25 @@ MONGO_PWD = "test"
 
 # spider stop controller
 CLOSESPIDER_ERRORCOUNT = 30
+IDLE_MAX_COUNT = 300
+
+# BloomFilter
+SCHEDULER = "hupu.scrapy-redis-bloomfilter.scheduler.Scheduler"
+DUPEFILTER_CLASS = "hupu.scrapy-redis-bloomfilter.dupefilter.RFPDupeFilter"
+BLOOMFILTER_HASH_NUMBER = 6
+# Redis Memory Bit of BloomFilter Usage, 30 means 2^30 = 128MB
+BLOOMFILTER_BIT = 30
+
+# Ignore url params and formdata in request when generate request_fingerprint
+IGNORE_PARAMS = [
+    'clientId',
+    'crt',
+    '_ssid',
+    '_imei',
+    'client',
+    'android_id',
+    'sign',
+    'stamp',
+]
+
+

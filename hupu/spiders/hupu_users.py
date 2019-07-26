@@ -199,7 +199,7 @@ class HupuUsersSpider(RedisSpider):
                 'show_type': '',
                 'postAuthorPuid': '',
                 'client': client,
-                'page': '1',
+                'page': current_page,
                 'android_id': client,
                 'entrance': '9',
                 'order': 'asc',
