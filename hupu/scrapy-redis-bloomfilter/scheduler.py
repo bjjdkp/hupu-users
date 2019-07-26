@@ -1,6 +1,5 @@
 import importlib
 import six
-import re
 import logging
 from scrapy.utils.misc import load_object
 from . import connection, defaults
