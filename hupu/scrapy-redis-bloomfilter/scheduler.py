@@ -177,9 +177,9 @@ class Scheduler(object):
             self.idle_counter = 0
         if request is None:
             self.idle_counter += 1
-            logging.debug("Idle_Max_Count: %s,Idle_Counter: %s" % (idle_max_count, self.idle_counter))
+            logging.info("Idle_Max_Count: %s,Idle_Counter: %s" % (idle_max_count, self.idle_counter))
             if self.idle_counter > idle_max_count:
-                logging.debug("Beyond Idle_Max_Count,close spider...")
+                logging.info("Beyond Idle_Max_Count,close spider...")
                 self.spider.crawler.engine.close_spider(self.spider, 'request queue is empty')
         return request
 
