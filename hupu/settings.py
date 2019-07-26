@@ -66,7 +66,7 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'hupu.pipelines.HupuPipeline': 300,
-    'scrapy_redis.pipelines.RedisPipeline': 300
+    # 'scrapy_redis.pipelines.RedisPipeline': 300
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
