@@ -106,6 +106,12 @@ class HupuUsersSpider(RedisSpider):
         fid = json.loads(res.text)["data"]["topic"]["fid"]
         return fid
 
+    def get_delta_date(self, days):
+        today = datetime.datetime.now()
+        delta = datetime.timedelta(days=days)
+        date = (today - delta).strftime("%Y-%m-%d")
+        return date
+
     def get_sub_topics(self, response):
         """
         单个话题下的帖子
@@ -126,15 +132,14 @@ class HupuUsersSpider(RedisSpider):
             topic_data["tid"] = post["tid"]
             launch_str = post["time"]
             if "天" in launch_str:
-                today = datetime.datetime.now()
                 days = int(re.search(r'\d+', launch_str).group())
-                delta = datetime.timedelta(days=days)
-                launch_time = (today-delta).strftime("%Y-%m-%d")
+                launch_time = self.get_delta_date(days)
             else:
-                launch_time = datetime.datetime.now().strftime("%Y-%m-%d")
+                launch_time = self.get_delta_date(0)
             topic_data["launch_time"] = launch_time
             topic_data["title"] = post["title"]
             topic_data["user_name"] = post["user_name"]
+            topic_data["update_time"] = self.get_delta_date(0)
             yield topic_data
 
             posts_url = "https://bbs.mobileapi.hupu.com/1/7.3.17/threads/getsThreadPostList"
@@ -254,7 +259,9 @@ class HupuUsersSpider(RedisSpider):
         user_data["nickname"] = user_json["nickname"]
         user_data["header_url"] = user_json["header"]
         user_data["level"] = user_json["level"]
-        user_data["register_days"] = int(re.search(r'\d+', user_json["reg_time_str"]).group())
+        user_data["register_date"] = self.get_delta_date(
+            int(re.search(r'\d+', user_json["reg_time_str"]).group())
+        )
         user_data["gender"] = user_json["gender"]
         user_data["location"] = user_json["location_str"]
         user_data["follow_count"] = int(user_json["follow_count"])
@@ -275,6 +282,7 @@ class HupuUsersSpider(RedisSpider):
         user_data["bbs_fans"] = self.get_fans(user_data)
         user_data["bbs_job"] = user_json["bbs_job"]
         user_data["reputation"] = int(user_json["reputation"]["value"])
+        user_data["update_time"] = self.get_delta_date(0)
 
         yield user_data
 

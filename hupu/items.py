@@ -14,7 +14,7 @@ class UserItem(scrapy.Item):
     nickname = scrapy.Field()
     header_url = scrapy.Field()
     level = scrapy.Field()
-    register_days = scrapy.Field()
+    register_date = scrapy.Field()
     gender = scrapy.Field()  # 0：未设置   1：男   2：女
     location = scrapy.Field()
     follow_count = scrapy.Field()  # 关注人数
@@ -35,6 +35,7 @@ class UserItem(scrapy.Item):
     bbs_fans = scrapy.Field()
     bbs_job = scrapy.Field()
     reputation = scrapy.Field()
+    update_time = scrapy.Field()
 
 
 class TopicItem(scrapy.Item):
@@ -45,6 +46,7 @@ class TopicItem(scrapy.Item):
     launch_time = scrapy.Field()
     title = scrapy.Field()
     user_name = scrapy.Field()
+    update_time = scrapy.Field()
 
 
 
