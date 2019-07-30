@@ -106,8 +106,8 @@ REDIS_PORT = 6379
 MONGO_URI = "localhost"
 MONGO_PORT = 27017
 MONGO_DATABASE = "hupu"
-MONGO_USR = "test"
-MONGO_PWD = "test"
+MONGO_USR = "xxx"
+MONGO_PWD = "xxx"
 
 # spider stop controller
 CLOSESPIDER_ERRORCOUNT = 30
@@ -131,5 +131,11 @@ IGNORE_PARAMS = [
     'sign',
     'stamp',
 ]
+
+# local_settings
+try:
+    from .local_settings import *
+except ImportError:
+    pass
 
 
