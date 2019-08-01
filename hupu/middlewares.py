@@ -84,7 +84,7 @@ class HupuDownloaderMiddleware(object):
             return None
 
         puid = request.meta["puid"]
-        client = pymongo.MongoClient(host=MONGO_URI, port=MONGO_PORT)
+        client = pymongo.MongoClient(host=MONGO_HOST, port=MONGO_PORT)
         db = client[MONGO_DATABASE]
         db.authenticate(MONGO_USR, MONGO_PWD, mechanism='SCRAM-SHA-1')
         user = db["users"].find_one({"puid": puid})

@@ -100,14 +100,19 @@ ITEM_PIPELINES = {
 SCHEDULER_PERSIST = True
 
 # Specify the host and port to use when connecting to databases.
+# Redis
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
-
-MONGO_URI = "localhost"
+# MongoDB
+MONGO_HOST = "localhost"
 MONGO_PORT = 27017
 MONGO_DATABASE = "hupu"
 MONGO_USR = "xxx"
 MONGO_PWD = "xxx"
+# Neo4j
+NEO4J_HOST = "localhost"
+NEO4J_PWD = "xxx"
+
 
 # spider stop controller
 CLOSESPIDER_ERRORCOUNT = 30

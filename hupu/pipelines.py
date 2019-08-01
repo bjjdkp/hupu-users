@@ -25,7 +25,7 @@ class HupuPipeline(object):
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
-            mongo_uri=crawler.settings.get('MONGO_URI'),
+            mongo_uri=crawler.settings.get('MONGO_HOST'),
             mongo_db=crawler.settings.get('MONGO_DATABASE', 'hupu'),
             mongo_port=crawler.settings.get('MONGO_PORT'),
             mongo_usr=crawler.settings.get('MONGO_USR'),
