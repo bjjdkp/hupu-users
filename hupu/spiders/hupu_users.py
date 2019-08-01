@@ -4,20 +4,23 @@ import re
 import time
 import json
 import scrapy
-import random
 import logging
 import datetime
 import requests
+from py2neo import Graph
 import hupu.utils as utils
+from hupu.settings import *
 from urllib.parse import urlencode
 from scrapy_redis.spiders import RedisSpider
-from hupu.items import UserItem, TopicItem
+from hupu.items import UserItem, TopicItem, User
 
 
 class HupuUsersSpider(RedisSpider):
     name = 'hupu_users'
     allowed_domains = ['hupu.com']
     redis_key = 'hupu_users:start_urls'
+
+    graph = Graph(NEO4J_URI, password=NEO4J_PWD)
 
     def start_requests(self):
         index_url = "https://bbs.mobileapi.hupu.com/1/7.3.17/topics"
@@ -43,7 +46,7 @@ class HupuUsersSpider(RedisSpider):
 
     def get_topics_list(self, response):
         """
-        所有大话题列表
+        a list for all main topics
         :param response:
         :return:
         """
@@ -114,7 +117,7 @@ class HupuUsersSpider(RedisSpider):
 
     def get_sub_topics(self, response):
         """
-        单个话题下的帖子
+        parse posts in sub_topics
         :param response:
         :return:
         """
@@ -175,7 +178,7 @@ class HupuUsersSpider(RedisSpider):
 
     def get_replies(self, response):
         """
-        单个帖子下回复
+        parse replies in posts
         :param response:
         :return:
         """
@@ -248,13 +251,13 @@ class HupuUsersSpider(RedisSpider):
 
     def parse_user_detail(self, response):
         """
-        用户详情页
+        parse detail info page for users
         :param response:
         :return:
         """
         user_json = json.loads(response.body.decode())["result"]
 
-        user_data = UserItem()
+        user_data = UserItem()  # save data to MongoDB
         user_data["puid"] = response.meta["puid"]
         user_data["nickname"] = user_json["nickname"]
         user_data["header_url"] = user_json["header"]
@@ -312,9 +315,9 @@ class HupuUsersSpider(RedisSpider):
                     meta={"puid": int(user["puid"])}
                 )
 
-    def get_followers(self, user_data):
+    def get_follow(self, user_data):
         """
-        获取关注列表
+        get list for follow
         :param user_data:
         :return:
         """
@@ -345,7 +348,7 @@ class HupuUsersSpider(RedisSpider):
 
     def get_fans(self, user_data):
         """
-        获取粉丝列表
+        get list for fans
         :param user_data:
         :return:
         """
