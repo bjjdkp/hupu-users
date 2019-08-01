@@ -257,37 +257,41 @@ class HupuUsersSpider(RedisSpider):
         """
         user_json = json.loads(response.body.decode())["result"]
 
-        user_data = UserItem()  # save data to MongoDB
-        user_data["puid"] = response.meta["puid"]
-        user_data["nickname"] = user_json["nickname"]
-        user_data["header_url"] = user_json["header"]
-        user_data["level"] = user_json["level"]
-        user_data["register_date"] = self.get_delta_date(
+        mongo_user = UserItem()  # save data to MongoDB
+        mongo_user["puid"] = response.meta["puid"]
+        mongo_user["nickname"] = user_json["nickname"]
+        neo4j_user = User()  # save data to Neo4j
+        neo4j_user.puid = response.meta["puid"]
+        neo4j_user.name = user_json["nickname"]
+        
+        mongo_user["header_url"] = user_json["header"]
+        mongo_user["level"] = user_json["level"]
+        mongo_user["register_date"] = self.get_delta_date(
             int(re.search(r'\d+', user_json["reg_time_str"]).group())
         )
-        user_data["gender"] = user_json["gender"]
-        user_data["location"] = user_json["location_str"]
-        user_data["follow_count"] = int(user_json["follow_count"])
-        user_data["fans_count"] = int(user_json["be_follow_count"])
-        user_data["be_light_count"] = int(user_json["be_light_count"])
-        user_data["be_recommend_count"] = int(user_json["be_recommend_count"])
-        user_data["bbs_msg_count"] = int(user_json["bbs_msg_count"])
-        user_data["bbs_post_count"] = int(user_json["bbs_post_count"])
-        user_data["bbs_recommend_count"] = int(user_json["bbs_recommend_count"])
-        user_data["news_comment_count"] = int(user_json["news_comment_count"])
-        user_data["bbs_msg_url"] = user_json["bbs_msg_url"]
-        user_data["bbs_post_url"] = user_json["bbs_post_url"]
-        user_data["bbs_recommend_url"] = user_json["bbs_recommend_url"]
-        user_data["news_comment_url"] = user_json["news_comment_url"]
-        user_data["bbs_follow_url"] = user_json["bbs_follow_url"]
-        bbs_follow = self.get_follow(user_data)
-        user_data["bbs_fans_url"] = user_json["bbs_be_follow_url"]
-        bbs_fans = self.get_fans(user_data)
-        user_data["bbs_job"] = user_json["bbs_job"]
-        user_data["reputation"] = int(user_json["reputation"]["value"])
-        user_data["update_time"] = self.get_delta_date(0)
+        mongo_user["gender"] = user_json["gender"]
+        mongo_user["location"] = user_json["location_str"]
+        mongo_user["follow_count"] = int(user_json["follow_count"])
+        mongo_user["fans_count"] = int(user_json["be_follow_count"])
+        mongo_user["be_light_count"] = int(user_json["be_light_count"])
+        mongo_user["be_recommend_count"] = int(user_json["be_recommend_count"])
+        mongo_user["bbs_msg_count"] = int(user_json["bbs_msg_count"])
+        mongo_user["bbs_post_count"] = int(user_json["bbs_post_count"])
+        mongo_user["bbs_recommend_count"] = int(user_json["bbs_recommend_count"])
+        mongo_user["news_comment_count"] = int(user_json["news_comment_count"])
+        mongo_user["bbs_msg_url"] = user_json["bbs_msg_url"]
+        mongo_user["bbs_post_url"] = user_json["bbs_post_url"]
+        mongo_user["bbs_recommend_url"] = user_json["bbs_recommend_url"]
+        mongo_user["news_comment_url"] = user_json["news_comment_url"]
+        mongo_user["bbs_follow_url"] = user_json["bbs_follow_url"]
+        bbs_follow = self.get_follow(mongo_user)
+        mongo_user["bbs_fans_url"] = user_json["bbs_be_follow_url"]
+        bbs_fans = self.get_fans(mongo_user)
+        mongo_user["bbs_job"] = user_json["bbs_job"]
+        mongo_user["reputation"] = int(user_json["reputation"]["value"])
+        mongo_user["update_time"] = self.get_delta_date(0)
 
-        yield user_data
+        yield mongo_user
 
         all_contacts = bbs_follow + bbs_fans
         if all_contacts:
@@ -315,16 +319,16 @@ class HupuUsersSpider(RedisSpider):
                     meta={"puid": int(user["puid"])}
                 )
 
-    def get_follow(self, user_data):
+    def get_follow(self, mongo_user):
         """
         get list for follow
-        :param user_data:
+        :param mongo_user:
         :return:
         """
-        if user_data["follow_count"] == 0:
+        if mongo_user["follow_count"] == 0:
             return []
 
-        logging.debug("follow_count: %s" % user_data["follow_count"])
+        logging.debug("follow_count: %s" % mongo_user["follow_count"])
         bbs_follow = []
         page = 1
         user_follow_url = "https://bbs.mobileapi.hupu.com/1/7.3.17/user/getUserFollow"
@@ -333,7 +337,7 @@ class HupuUsersSpider(RedisSpider):
         }
         while True:
             params = {
-                'puid': user_data["puid"],
+                'puid': mongo_user["puid"],
                 'client': utils.get_random_client(),
                 'page': page,
             }
@@ -346,16 +350,16 @@ class HupuUsersSpider(RedisSpider):
                 break
         return bbs_follow
 
-    def get_fans(self, user_data):
+    def get_fans(self, mongo_user):
         """
         get list for fans
-        :param user_data:
+        :param mongo_user:
         :return:
         """
-        if user_data["fans_count"] == 0:
+        if mongo_user["fans_count"] == 0:
             return []
 
-        logging.debug("fans_count: %s" % user_data["fans_count"])
+        logging.debug("fans_count: %s" % mongo_user["fans_count"])
         bbs_fans = []
         page = 1
         user_fans_url = "https://bbs.mobileapi.hupu.com/1/7.3.17/user/getUserBeFollow"
@@ -364,7 +368,7 @@ class HupuUsersSpider(RedisSpider):
         }
         while True:
             params = {
-                'puid': user_data["puid"],
+                'puid': mongo_user["puid"],
                 'client': utils.get_random_client(),
                 'page': page,
             }
