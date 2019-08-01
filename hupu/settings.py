@@ -110,7 +110,7 @@ MONGO_DATABASE = "hupu"
 MONGO_USR = "xxx"
 MONGO_PWD = "xxx"
 # Neo4j
-NEO4J_HOST = "localhost"
+NEO4J_URI = "http://localhost:7474"
 NEO4J_PWD = "xxx"
 
 
