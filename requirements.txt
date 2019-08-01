@@ -2,3 +2,4 @@ Scrapy
 requests
 pymongo
 scrapy-redis
+py2neo==4.3.0
