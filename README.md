@@ -33,9 +33,7 @@
 | bbs\_recommend\_url   | 推荐url             |
 | news\_comment\_url    | 新闻评论url           |
 | bbs\_follow\_url      | 关注列表url           |
-| bbs\_followers        | 关注列表              |
 | bbs\_fans\_url        | 粉丝数url            |
-| bbs\_fans             | 粉丝列表              |
 | bbs\_job              | 论坛职位              |
 | reputation            | 声望                |
 | update_time           | 数据更新时间          |

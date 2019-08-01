@@ -280,16 +280,16 @@ class HupuUsersSpider(RedisSpider):
         user_data["bbs_recommend_url"] = user_json["bbs_recommend_url"]
         user_data["news_comment_url"] = user_json["news_comment_url"]
         user_data["bbs_follow_url"] = user_json["bbs_follow_url"]
-        user_data["bbs_followers"] = self.get_followers(user_data)
+        bbs_follow = self.get_follow(user_data)
         user_data["bbs_fans_url"] = user_json["bbs_be_follow_url"]
-        user_data["bbs_fans"] = self.get_fans(user_data)
+        bbs_fans = self.get_fans(user_data)
         user_data["bbs_job"] = user_json["bbs_job"]
         user_data["reputation"] = int(user_json["reputation"]["value"])
         user_data["update_time"] = self.get_delta_date(0)
 
         yield user_data
 
-        all_contacts = user_data["bbs_followers"] + user_data["bbs_fans"]
+        all_contacts = bbs_follow + bbs_fans
         if all_contacts:
             for user in all_contacts:
                 user_url = "https://games.mobileapi.hupu.com/3/7.3.17/user/page"
@@ -325,7 +325,7 @@ class HupuUsersSpider(RedisSpider):
             return []
 
         logging.debug("follow_count: %s" % user_data["follow_count"])
-        bbs_followers = []
+        bbs_follow = []
         page = 1
         user_follow_url = "https://bbs.mobileapi.hupu.com/1/7.3.17/user/getUserFollow"
         headers = {
@@ -339,12 +339,12 @@ class HupuUsersSpider(RedisSpider):
             }
             res = requests.get(user_follow_url, headers=headers, params=params)
             res_json = json.loads(res.text)
-            bbs_followers.extend(res_json["result"].get("list", []))
+            bbs_follow.extend(res_json["result"].get("list", []))
             if res_json["result"]["nextPage"]:
                 page += 1
             else:
                 break
-        return bbs_followers
+        return bbs_follow
 
     def get_fans(self, user_data):
         """
