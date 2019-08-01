@@ -6,6 +6,7 @@
 # https://doc.scrapy.org/en/latest/topics/items.html
 
 import scrapy
+from py2neo.ogm import GraphObject, Property, RelatedTo
 
 
 class UserItem(scrapy.Item):
@@ -49,7 +50,12 @@ class TopicItem(scrapy.Item):
     update_time = scrapy.Field()
 
 
+class User(GraphObject):
+    __primarykey__ = 'puid'
 
+    puid = Property()
+    name = Property()
+    follow = RelatedTo('User', 'follow')
 
 
 
