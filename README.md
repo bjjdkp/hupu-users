@@ -27,9 +27,9 @@ pip install -r requirements.txt
 
 启动脚本：  
 
-`python run.py`
-
-
+```
+python run.py
+```
 
 ### MongoDB数据库字段说明  
 #### users   
@@ -59,7 +59,7 @@ pip install -r requirements.txt
 | bbs\_job              | 论坛职位              |
 | reputation            | 声望                |
 | update_time           | 数据更新时间          |
----
+
 
 #### topics  
 | 字段名           | 说明    |
