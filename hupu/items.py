@@ -38,9 +38,6 @@ class UserItem(scrapy.Item):
 
 
 class TopicItem(scrapy.Item):
-    light_replys = scrapy.Field()
-    recommends = scrapy.Field()
-    replys = scrapy.Field()
     tid = scrapy.Field()
     launch_time = scrapy.Field()
     title = scrapy.Field()

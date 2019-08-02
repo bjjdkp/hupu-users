@@ -128,10 +128,9 @@ class HupuUsersSpider(RedisSpider):
             return
 
         for post in posts_list:
+            if post.get("is_ad", "") == 1:
+                continue
             topic_data = TopicItem()
-            topic_data["light_replys"] = post["light_replys"]
-            topic_data["recommends"] = post["recommends"]
-            topic_data["replys"] = post["replys"]
             topic_data["tid"] = post["tid"]
             launch_str = post["time"]
             if "天" in launch_str:
@@ -261,7 +260,7 @@ class HupuUsersSpider(RedisSpider):
         mongo_user["puid"] = response.meta["puid"]
         mongo_user["nickname"] = user_json["nickname"]
         neo4j_user = User()  # save data to Neo4j
-        neo4j_user.puid = response.meta["puid"]
+        neo4j_user.puid = str(response.meta["puid"])
         neo4j_user.name = user_json["nickname"]
         
         mongo_user["header_url"] = user_json["header"]
@@ -284,9 +283,9 @@ class HupuUsersSpider(RedisSpider):
         mongo_user["bbs_recommend_url"] = user_json["bbs_recommend_url"]
         mongo_user["news_comment_url"] = user_json["news_comment_url"]
         mongo_user["bbs_follow_url"] = user_json["bbs_follow_url"]
-        bbs_follow = self.get_follow(mongo_user)
+        bbs_follow = self.get_follow(mongo_user, neo4j_user)
         mongo_user["bbs_fans_url"] = user_json["bbs_be_follow_url"]
-        bbs_fans = self.get_fans(mongo_user)
+        bbs_fans = self.get_fans(mongo_user, neo4j_user)
         mongo_user["bbs_job"] = user_json["bbs_job"]
         mongo_user["reputation"] = int(user_json["reputation"]["value"])
         mongo_user["update_time"] = self.get_delta_date(0)
@@ -319,11 +318,9 @@ class HupuUsersSpider(RedisSpider):
                     meta={"puid": int(user["puid"])}
                 )
 
-    def get_follow(self, mongo_user):
+    def get_follow(self, mongo_user, neo4j_user):
         """
         get list for follow
-        :param mongo_user:
-        :return:
         """
         if mongo_user["follow_count"] == 0:
             return []
@@ -343,18 +340,26 @@ class HupuUsersSpider(RedisSpider):
             }
             res = requests.get(user_follow_url, headers=headers, params=params)
             res_json = json.loads(res.text)
-            bbs_follow.extend(res_json["result"].get("list", []))
+            batch_data = res_json["result"].get("list", [])
+
+            for item in batch_data:
+                neo4j_follow_user = User()
+                neo4j_follow_user.puid = str(item["puid"])
+                neo4j_follow_user.name = item["username"]
+                self.graph.merge(neo4j_user)
+                neo4j_user.follow.update(neo4j_follow_user)
+                self.graph.push(neo4j_user)
+
+            bbs_follow.extend(batch_data)
             if res_json["result"]["nextPage"]:
                 page += 1
             else:
                 break
         return bbs_follow
 
-    def get_fans(self, mongo_user):
+    def get_fans(self, mongo_user, neo4j_user):
         """
         get list for fans
-        :param mongo_user:
-        :return:
         """
         if mongo_user["fans_count"] == 0:
             return []
@@ -374,7 +379,17 @@ class HupuUsersSpider(RedisSpider):
             }
             res = requests.get(user_fans_url, headers=headers, params=params)
             res_json = json.loads(res.text)
-            bbs_fans.extend(res_json["result"].get("list", []))
+            batch_data = res_json["result"].get("list", [])
+
+            for item in batch_data:
+                neo4j_fan_user = User()
+                neo4j_fan_user.puid = str(item["puid"])
+                neo4j_fan_user.name = item["username"]
+                self.graph.merge(neo4j_fan_user)
+                neo4j_fan_user.follow.update(neo4j_user)
+                self.graph.push(neo4j_fan_user)
+
+            bbs_fans.extend(batch_data)
             if res_json["result"]["nextPage"]:
                 page += 1
             else:
