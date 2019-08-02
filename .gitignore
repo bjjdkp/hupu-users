@@ -104,4 +104,4 @@ venv.bak/
 .mypy_cache/
 
 # test files
-/archives
+archives/
