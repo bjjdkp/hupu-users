@@ -265,9 +265,11 @@ class HupuUsersSpider(RedisSpider):
         
         mongo_user["header_url"] = user_json["header"]
         mongo_user["level"] = user_json["level"]
-        mongo_user["register_date"] = self.get_delta_date(
-            int(re.search(r'\d+', user_json["reg_time_str"]).group())
-        )
+        if re.search(r'\d+', user_json["reg_time_str"]):
+            register_days = re.search(r'\d+', user_json["reg_time_str"]).group()
+        else:
+            register_days = 0
+        mongo_user["register_date"] = self.get_delta_date(int(register_days))
         mongo_user["gender"] = user_json["gender"]
         mongo_user["location"] = user_json["location_str"]
         mongo_user["follow_count"] = int(user_json["follow_count"])
