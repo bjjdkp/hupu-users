@@ -109,10 +109,20 @@ class HupuUsersSpider(RedisSpider):
         fid = json.loads(res.text)["data"]["topic"]["fid"]
         return fid
 
-    def get_delta_date(self, days):
+    @staticmethod
+    def get_interval_date(days, hourly=0):
+        """
+        according to interval days,get date form today
+        :param days: Date of interval
+        :param hourly: return date or Down to the hour
+        :return:
+        """
         today = datetime.datetime.now()
         delta = datetime.timedelta(days=days)
-        date = (today - delta).strftime("%Y-%m-%d")
+        if hourly:
+            date = (today - delta).strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            date = (today - delta).strftime("%Y-%m-%d")
         return date
 
     def get_sub_topics(self, response):
@@ -135,13 +145,13 @@ class HupuUsersSpider(RedisSpider):
             launch_str = post["time"]
             if "天" in launch_str:
                 days = int(re.search(r'\d+', launch_str).group())
-                launch_time = self.get_delta_date(days)
+                launch_time = self.get_interval_date(days)
             else:
-                launch_time = self.get_delta_date(0)
+                launch_time = self.get_interval_date(0)
             topic_data["launch_time"] = launch_time
             topic_data["title"] = post["title"]
             topic_data["user_name"] = post["user_name"]
-            topic_data["update_time"] = self.get_delta_date(0)
+            topic_data["update_time"] = self.get_interval_date(0, 1)
             yield topic_data
 
             posts_url = "https://bbs.mobileapi.hupu.com/1/7.3.17/threads/getsThreadPostList"
@@ -269,7 +279,7 @@ class HupuUsersSpider(RedisSpider):
             register_days = re.search(r'\d+', user_json["reg_time_str"]).group()
         else:
             register_days = 0
-        mongo_user["register_date"] = self.get_delta_date(int(register_days))
+        mongo_user["register_date"] = self.get_interval_date(int(register_days))
         mongo_user["gender"] = user_json["gender"]
         mongo_user["location"] = user_json["location_str"]
         mongo_user["follow_count"] = int(user_json["follow_count"])
@@ -290,7 +300,7 @@ class HupuUsersSpider(RedisSpider):
         bbs_fans = self.get_fans(mongo_user, neo4j_user)
         mongo_user["bbs_job"] = user_json["bbs_job"]
         mongo_user["reputation"] = int(user_json["reputation"]["value"])
-        mongo_user["update_time"] = self.get_delta_date(0)
+        mongo_user["update_time"] = self.get_interval_date(0, 1)
 
         yield mongo_user
 
