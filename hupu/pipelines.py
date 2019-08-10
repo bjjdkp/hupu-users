@@ -7,6 +7,9 @@
 
 
 import pymongo
+from hupu.settings import *
+from py2neo import Graph
+from py2neo.database import Schema
 from hupu.items import UserItem, TopicItem
 
 
@@ -33,12 +36,18 @@ class HupuPipeline(object):
         )
 
     def open_spider(self, spider):
+        # connect to mongo and create index
         self.client = pymongo.MongoClient(host=self.mongo_uri, port=self.mongo_port)
         self.db = self.client[self.mongo_db]
         self.db.authenticate(self.mongo_usr, self.mongo_pwd, mechanism='SCRAM-SHA-1')
-
         self.db[self.user_collection_name].create_index("puid", unique=True)
         self.db[self.topic_collection_name].create_index("tid", unique=True)
+
+        # create index and constraint for neo4j
+        graph = Graph(NEO4J_URI, password=NEO4J_PWD)
+        Schema(graph).create_index('User', 'puid')
+        Schema(graph).create_index('User', 'name')
+        # Schema(graph).create_uniqueness_constraint('User', 'puid')
 
     def close_spider(self, spider):
         self.client.close()
