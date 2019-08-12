@@ -3,6 +3,8 @@
 import re
 import time
 import json
+import redis
+import pickle
 import scrapy
 import logging
 import datetime
@@ -21,6 +23,7 @@ class HupuUsersSpider(RedisSpider):
     redis_key = 'hupu_users:start_urls'
 
     graph = Graph(NEO4J_URI, password=NEO4J_PWD)
+    redis_conn = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)
 
     def start_requests(self):
         index_url = "https://bbs.mobileapi.hupu.com/1/7.3.17/topics"
@@ -361,7 +364,7 @@ class HupuUsersSpider(RedisSpider):
                 neo4j_follow_user.puid = str(item["puid"])
                 neo4j_follow_user.name = item["nickname"]
                 neo4j_user.follow.update(neo4j_follow_user)
-            self.graph.merge(neo4j_user)
+            self.redis_conn.lpush(NEO4J_PENDING_QUEUE, pickle.dumps(neo4j_user))
 
             bbs_follow.extend(batch_data)
             if res_json["result"]["nextPage"]:

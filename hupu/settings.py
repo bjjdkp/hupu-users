@@ -113,6 +113,9 @@ MONGO_PWD = "xxx"
 NEO4J_URI = "http://localhost:7474"
 NEO4J_PWD = "xxx"
 
+# neo4j pending queue and doing queue
+NEO4J_PENDING_QUEUE = "hupu_users:neo_pending"
+NEO4J_DOING_QUEUE = "hupu_users:neo_doing"
 
 # spider stop controller
 CLOSESPIDER_ERRORCOUNT = 30
