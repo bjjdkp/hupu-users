@@ -364,18 +364,18 @@ class HupuUsersSpider(RedisSpider):
             #     neo4j_user.follow.update(neo4j_follow_user)
             #     self.graph.push(neo4j_user)
 
+            for item in batch_data:
+                neo4j_follow_user = User()
+                neo4j_follow_user.puid = str(item["puid"])
+                neo4j_follow_user.name = item["nickname"]
+                neo4j_user.follow.update(neo4j_follow_user)
+            self.graph.merge(neo4j_user)
+
             bbs_follow.extend(batch_data)
             if res_json["result"]["nextPage"]:
                 page += 1
             else:
                 break
-
-        for item in bbs_follow:
-            neo4j_follow_user = User()
-            neo4j_follow_user.puid = str(item["puid"])
-            neo4j_follow_user.name = item["nickname"]
-            neo4j_user.follow.update(neo4j_follow_user)
-        self.graph.merge(neo4j_user)
 
         return bbs_follow
 
