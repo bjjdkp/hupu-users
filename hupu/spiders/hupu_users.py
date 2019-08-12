@@ -356,14 +356,6 @@ class HupuUsersSpider(RedisSpider):
             for item in batch_data:
                 item["nickname"] = item.pop("username")
 
-            # for item in batch_data:
-            #     neo4j_follow_user = User()
-            #     neo4j_follow_user.puid = str(item["puid"])
-            #     neo4j_follow_user.name = item["username"]
-            #     self.graph.merge(neo4j_user)
-            #     neo4j_user.follow.update(neo4j_follow_user)
-            #     self.graph.push(neo4j_user)
-
             for item in batch_data:
                 neo4j_follow_user = User()
                 neo4j_follow_user.puid = str(item["puid"])
