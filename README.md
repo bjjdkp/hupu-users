@@ -29,7 +29,10 @@ pip install -r requirements.txt
 启动脚本：  
 
 ```
-python run.py
+# 启动生产者(可分布式启动多个)
+python run_spider.py
+# 启动消费者(由于neo4j的写锁，建议启动一个消费者写入neo4j)
+python neo4j_customer.py
 ```
 
 ### MongoDB数据库字段说明  
@@ -65,9 +68,6 @@ python run.py
 #### topics  
 | 字段名           | 说明    |
 |---------------|-------|
-| light\_replys | 高亮回复数 |
-| recommends    | 被推荐数  |
-| replys        | 回复数   |
 | tid           | 话题id  |
 | launch\_time  | 发布时间  |
 | title         | 帖子标题  |
