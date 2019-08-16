@@ -23,7 +23,9 @@ class HupuUsersSpider(RedisSpider):
     redis_key = 'hupu_users:start_urls'
 
     graph = Graph(NEO4J_URI, password=NEO4J_PWD)
-    redis_conn = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)
+    redis_conn = redis.StrictRedis(
+        host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PARAMS["password"],
+    )
 
     def start_requests(self):
         index_url = "https://bbs.mobileapi.hupu.com/1/7.3.17/topics"

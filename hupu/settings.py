@@ -103,6 +103,7 @@ SCHEDULER_PERSIST = True
 # Redis
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
+REDIS_PARAMS = {'password': 'xxx'}
 # MongoDB
 MONGO_HOST = "localhost"
 MONGO_PORT = 27017

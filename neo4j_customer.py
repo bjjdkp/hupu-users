@@ -16,7 +16,9 @@ logging.basicConfig(
 
 class Neo4jCustomer(object):
     def __init__(self):
-        self.redis_conn = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT)
+        self.redis_conn = redis.StrictRedis(
+            host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PARAMS["password"],
+        )
         self.graph = Graph(NEO4J_URI, password=NEO4J_PWD)
         self.pending_queue = NEO4J_PENDING_QUEUE
         self.doing_queue = NEO4J_DOING_QUEUE
