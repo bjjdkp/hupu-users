@@ -364,13 +364,13 @@ class HupuUsersSpider(RedisSpider):
                 neo4j_follow_user.puid = str(item["puid"])
                 neo4j_follow_user.name = item["nickname"]
                 neo4j_user.follow.update(neo4j_follow_user)
-            self.redis_conn.lpush(NEO4J_PENDING_QUEUE, pickle.dumps(neo4j_user))
 
             bbs_follow.extend(batch_data)
             if res_json["result"]["nextPage"]:
                 page += 1
             else:
                 break
+        self.redis_conn.lpush(NEO4J_PENDING_QUEUE, pickle.dumps(neo4j_user))
 
         return bbs_follow
 
