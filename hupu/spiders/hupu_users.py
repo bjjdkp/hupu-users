@@ -272,7 +272,7 @@ class HupuUsersSpider(RedisSpider):
         try:
             user_json = json.loads(response.body.decode())["result"]
         except KeyError as e:
-            print("source data: %s" % json.loads(response.body.decode()))
+            logging.warning("404 error: %s" % response.meta["puid"])
             return
 
         mongo_user = UserItem()  # save data to MongoDB
