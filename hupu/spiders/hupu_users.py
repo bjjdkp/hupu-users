@@ -269,7 +269,11 @@ class HupuUsersSpider(RedisSpider):
         :param response:
         :return:
         """
-        user_json = json.loads(response.body.decode())["result"]
+        try:
+            user_json = json.loads(response.body.decode())["result"]
+        except KeyError as e:
+            print("source data: %s" % json.loads(response.body.decode()))
+            return
 
         mongo_user = UserItem()  # save data to MongoDB
         mongo_user["puid"] = response.meta["puid"]
