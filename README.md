@@ -4,5 +4,5 @@
 
 ### D  
 
-[当当阅读器](./archives/dangdang)
+[当当阅读器](scripts/dangdang)
 
